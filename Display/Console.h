@@ -3,7 +3,6 @@
 #include <iostream>
 #include <conio.h>
 #include <mutex>
-#include <unordered_map>
 
 #define BACKGROUND_BLUE      0x0010 // background color contains blue.
 #define BACKGROUND_GREEN     0x0020 // background color contains green.
