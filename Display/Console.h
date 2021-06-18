@@ -77,7 +77,7 @@ namespace scr_print
 		{
 			SetConsoleTextAttribute(hout, backColor | fontColor);
 		};
-		inline void setScreenFeature()
+		inline void SetScreenFeature()
 		{
 			SetConsoleCursorInfo(hout, &CursorInfo);
 			SetConsoleCursorPosition(hout, coord);

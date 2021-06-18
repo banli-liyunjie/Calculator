@@ -22,7 +22,7 @@ namespace scr_print
 		va_list vag;
 		va_start(vag, s);
 		_muStream.lock();
-		setScreenFeature();
+		SetScreenFeature();
 		for (int i = 0; s[i] != '\0'; i++)
 		{
 			if (s[i] == '\%')
@@ -74,7 +74,7 @@ namespace scr_print
 	Screen& Screen::display(const string& s)
 	{
 		_muStream.lock();
-		setScreenFeature();
+		SetScreenFeature();
 		for (auto& c : s)
 		{
 			do_display(c);
@@ -106,7 +106,7 @@ namespace scr_print
 	{
 		_muStream.lock();
 		SetPos(0, 0);
-		setScreenFeature();
+		SetScreenFeature();
 		for (int i = 0; i < height * width; i++)
 		{
 			do_display(' ');
@@ -136,7 +136,7 @@ namespace scr_print
 		unsigned int mid_num = width / 2;
 		unsigned int com_num = width * (1.0 * completed / totalprogress);
 		char str_pro[5];
-		sprintf(str_pro, "%d%%", progress);
+		sprintf_s(str_pro, "%d%%", progress);
 		Screen::_muStream.lock();
 		HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
 		SetConsoleCursorPosition(hout, coord);
@@ -174,7 +174,7 @@ namespace scr_print
 		unsigned int mid_num = width / 2;
 		unsigned int com_num = width * (1.0 * completed / totalprogress);
 		char str_pro[5];
-		sprintf(str_pro, "%d%%", progress);
+		sprintf_s(str_pro, "%d%%", progress);
 		if (com_num < mid_num - 1)
 		{
 			string pro(com_num, c);
