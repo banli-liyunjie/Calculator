@@ -49,11 +49,13 @@ int posX;
 int posY;
 
 #define POSCLICK(Name,sr,sc,hg,wt,bc,fc,vis,str,fun)\
-    while(true){\
-		if(posX>=sc&&posX<sc+wt&&posY>=sr&&posY<sr+hg)\
-			{fun(pScreen##Name);break;}\
-		break;\
-	}
+	if(posX>=sc&&posX<sc+wt&&posY>=sr&&posY<sr+hg)\
+		{fun(pScreen##Name);break;}
+
+#define CLICK_CALLBACK \
+	while(true){\
+		REG(POSCLICK)\
+    }
 
 
 #define DEL(Name)\
@@ -123,7 +125,7 @@ void MainTask()
 		{
 			posX = inRec.Event.MouseEvent.dwMousePosition.X;
 			posY = inRec.Event.MouseEvent.dwMousePosition.Y;
-			REG(POSCLICK);
+			CLICK_CALLBACK;
 		}
 		if (_kbhit())
 		{
