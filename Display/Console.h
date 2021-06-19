@@ -27,11 +27,16 @@ namespace scr_print
 	class Screen
 	{
 	public:
+		//构造函数，sr:起点行数 sc:起点列数 ht:屏幕高度 wd:屏幕宽度 bc:背景颜色 fc:字体颜色 cur:是否显示光标
 		Screen(pos sr, pos sc, pos ht, pos wd, WORD bc, WORD fc, bool cur);
+		//类printf功能，调用如: display("a=%d,b=%f",2,3.5); 显示为 a=2,b=3.5
 		Screen& display(const char* s, ...);
 		Screen& display(const std::string& s);
+		//设置光标位置
 		Screen& SetPos(pos r, pos c);
+		//设置背景与字体颜色
 		Screen& SetColor(WORD bc, WORD fc);
+		//换行
 		Screen& SetToNextLine();
 		Screen& Clear();
 		pos GetPosX() { return start_c; }
@@ -40,25 +45,27 @@ namespace scr_print
 		pos GetHeight() { return height; }
 		inline Screen& SetCurVisiable(bool visiable)
 		{
-			CursorInfo.bVisible = visiable;
+			cursorInfo.bVisible = visiable;
 			return *this;
 		}
+		//屏幕内输入功能 重置运算符>> 类似与cin
 		template<typename _T>
 		inline Screen& operator >>(_T& _type)
 		{
 			_muStream.lock();
-			CursorInfo.bVisible = true;
-			SetConsoleCursorInfo(hout, &CursorInfo);
+			cursorInfo.bVisible = true;
+			SetConsoleCursorInfo(hout, &cursorInfo);
 			SetConsoleCursorPosition(hout, coord);
 			SetColor();
 			std::cin >> _type;
 			SetToNextLine();
-			CursorInfo.bVisible = false;
+			cursorInfo.bVisible = false;
 			SetConsoleCursorPosition(hout, coord); // 回车后位置不可知,移动至Screen下一行
-			SetConsoleCursorInfo(hout, &CursorInfo);
+			SetConsoleCursorInfo(hout, &cursorInfo);
 			_muStream.unlock();
 			return *this;
 		}
+		// 屏幕内输出，重置运算符<< 类似与cout
 		template<typename _T>
 		inline Screen& operator <<(const _T& _type)
 		{
@@ -66,12 +73,19 @@ namespace scr_print
 			ss << _type;
 			return display(ss.str());
 		}
+		// 屏幕内输出，重置运算符<< 类似与cout,参数为endl，ends(函数指针，该endl,ends与标准函数库中不同,功能相同)
 		inline Screen& operator <<(Screen& (*_Pfn)(Screen&))
 		{
 			return _Pfn(*this);
 		}
+		/// <summary>
+		/// 线程锁，避免屏幕混乱
+		/// Screen类本质为在控制台中划分区域，修改光标位置实现屏幕输出功能。
+		/// 为避免多线程使用时屏幕混乱，加锁
+		/// </summary>
 		static std::mutex _muStream;
 	private:
+		// 默认初始化参数都为0，无意义，故不允许调用默认构造函数
 		Screen() = default;
 		inline void SetColor()
 		{
@@ -79,7 +93,7 @@ namespace scr_print
 		};
 		inline void SetScreenFeature()
 		{
-			SetConsoleCursorInfo(hout, &CursorInfo);
+			SetConsoleCursorInfo(hout, &cursorInfo);
 			SetConsoleCursorPosition(hout, coord);
 			SetColor();
 		}
@@ -105,7 +119,7 @@ namespace scr_print
 			}
 		};
 		HANDLE hout;
-		CONSOLE_CURSOR_INFO CursorInfo;
+		CONSOLE_CURSOR_INFO cursorInfo;
 		COORD coord;
 		WORD backColor;
 		WORD fontColor;
