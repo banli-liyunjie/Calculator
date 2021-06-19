@@ -10,6 +10,14 @@ using scr_print::Screen;
 using scr_print::endl;
 using scr_print::ends;
 
+/*
+* REG: Screen注册表，用于自动生成（宏展开）为Screen指针的定义、初始化、点击响应函数的声明与调用
+* 每一行第一个信息为名字，接着7个参数为Screen初始化参数，
+* 第9个参数为Screen初始显示字符串，第10个参数为按键点击响应函数
+* *********************************************************************************************
+* 增加Screen只需要增添该注册表项，并实现对应的点击响应函数。
+* 其余指针变量定义，初始化，响应函数调用，均在宏展开中自动完成。
+*/
 #define REG(x)\
 x(Enter, 0, 0, 1, 41, BACKGROUND_WHITE, 0, false,"",EnterClick)\
 x(Result,1, 0, 1, 41, BACKGROUND_WHITE, 0, false,"",ResultClick)\
@@ -35,12 +43,28 @@ x(Clr,  19, 21, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    AC", ClrClic
 x(Equal,19, 31, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    =",  EqualClick)
 
 
+/*
+* REG(DEF): 宏展开为
+*		Screen* pScreenEnter=NULL;
+*		void EnterClick(Screen* pSc);
+*		...
+*		Screen* pScreenEqual=NULL;
+*		void EqualClick(Screen* pSc);
+*/
 #define DEF(Name,sr,sc,hg,wt,bc,fc,vis,str,fun)\
 	Screen* pScreen##Name=NULL;\
 	void fun(Screen* pSc);
 REG(DEF)
 #undef DEF
 
+/*
+* REG(INIT): 宏展开为
+*		pScreenEnter=new Screen(0, 0, 1, 41, BACKGROUND_WHITE, 0, false);
+*		pScreenEnter->operator<< ("");
+*		...
+*		pScreenEqual=new Screen(19, 31, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false);
+*		pScreenEqual->operator<< ("\n    =");
+*/
 #define INIT(Name,sr,sc,hg,wt,bc,fc,vis,str,fun)\
 	pScreen##Name=new Screen(sr,sc,hg,wt,bc,fc,vis);\
 	pScreen##Name->operator<< (str);
@@ -48,6 +72,19 @@ REG(DEF)
 int posX;
 int posY;
 
+/*
+* CLICK_CALLBACK: 宏展开为
+*		while(true){
+*			if(posX>=0&&posX<0+41&&posY>=0&&posY<0+1)
+*				{EnterClick(pScreenEnter);break;}
+*			...
+*			if(posX>=31&&posX<31+9&&posY>=19&&posY<19+3)
+*				{EqualClick(pScreenEqual);break;}
+*			break;
+*		}
+* ***********************************************************
+* 根据位置调用对应的点击响应函数，若函数实体未实现，编译报错
+*/
 #define POSCLICK(Name,sr,sc,hg,wt,bc,fc,vis,str,fun)\
 	if(posX>=sc&&posX<sc+wt&&posY>=sr&&posY<sr+hg)\
 		{fun(pScreen##Name);break;}
@@ -58,7 +95,12 @@ int posY;
 		break;\
     }
 
-
+/*
+* REG(DEL): 宏展开为
+*		delete(pScreenEnter);
+*		...
+*		delete(pScreenEqual);
+*/
 #define DEL(Name)\
 	delete(pScreen##Name);
 
@@ -109,7 +151,7 @@ void DealTask()
 		pScreenEnter->Clear() << sEnter;
 		if (sResult != "")
 			pScreenResult->Clear().SetPos(0, pScreenResult->GetWidth() - sResult.size()) << sResult;
-		Sleep(100);
+		Sleep(20);
 	}
 }
 
@@ -142,7 +184,10 @@ void MainTask()
 	dealT.join();
 }
 
-
+void ReleaseWin()
+{
+	REG(DEL);
+}
 
 void StartCalWin()
 {
@@ -153,10 +198,6 @@ void StartCalWin()
 	ReleaseWin();
 }
 
-void ReleaseWin()
-{
-	REG(DEL);
-}
 char GetChar(Screen* pSc)
 {
 	if (pSc == pScreenNum0)
@@ -187,6 +228,7 @@ void NumClick(Screen* pSc)
 {
 	sNum += GetChar(pSc);
 }
+
 bool pointCheck = false;
 
 void PointClick(Screen* pSc)

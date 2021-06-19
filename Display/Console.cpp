@@ -11,8 +11,8 @@ namespace scr_print
 		height(ht), width(wd),
 		backColor(bc), fontColor(fc) {
 		hout = GetStdHandle(STD_OUTPUT_HANDLE);
-		GetConsoleCursorInfo(hout, &CursorInfo);
-		CursorInfo.bVisible = cur;
+		GetConsoleCursorInfo(hout, &cursorInfo);
+		cursorInfo.bVisible = cur;
 		Clear();
 		coord.X = sc;
 		coord.Y = sr;
