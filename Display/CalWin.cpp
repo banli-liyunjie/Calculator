@@ -55,6 +55,7 @@ int posY;
 #define CLICK_CALLBACK \
 	while(true){\
 		REG(POSCLICK)\
+		break;\
     }
 
 
@@ -149,10 +150,10 @@ void StartCalWin()
 	REG(INIT);
 	std::thread mT(MainTask);
 	mT.join();
-	releaseWin();
+	ReleaseWin();
 }
 
-void releaseWin()
+void ReleaseWin()
 {
 	REG(DEL);
 }

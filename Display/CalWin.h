@@ -4,4 +4,4 @@
 
 
 void StartCalWin();
-void releaseWin();
+void ReleaseWin();
