@@ -27,16 +27,16 @@ namespace scr_print
 	class Screen
 	{
 	public:
-		//¹¹Ôìº¯Êı£¬sr:ÆğµãĞĞÊı sc:ÆğµãÁĞÊı ht:ÆÁÄ»¸ß¶È wd:ÆÁÄ»¿í¶È bc:±³¾°ÑÕÉ« fc:×ÖÌåÑÕÉ« cur:ÊÇ·ñÏÔÊ¾¹â±ê
+		//æ„é€ å‡½æ•°ï¼Œsr:èµ·ç‚¹è¡Œæ•° sc:èµ·ç‚¹åˆ—æ•° ht:å±å¹•é«˜åº¦ wd:å±å¹•å®½åº¦ bc:èƒŒæ™¯é¢œè‰² fc:å­—ä½“é¢œè‰² cur:æ˜¯å¦æ˜¾ç¤ºå…‰æ ‡
 		Screen(pos sr, pos sc, pos ht, pos wd, WORD bc, WORD fc, bool cur);
-		//Ààprintf¹¦ÄÜ£¬µ÷ÓÃÈç: display("a=%d,b=%f",2,3.5); ÏÔÊ¾Îª a=2,b=3.5
+		//ç±»printfåŠŸèƒ½ï¼Œè°ƒç”¨å¦‚: display("a=%d,b=%f",2,3.5); æ˜¾ç¤ºä¸º a=2,b=3.5
 		Screen& display(const char* s, ...);
 		Screen& display(const std::string& s);
-		//ÉèÖÃ¹â±êÎ»ÖÃ
+		//è®¾ç½®å…‰æ ‡ä½ç½®
 		Screen& SetPos(pos r, pos c);
-		//ÉèÖÃ±³¾°Óë×ÖÌåÑÕÉ«
+		//è®¾ç½®èƒŒæ™¯ä¸å­—ä½“é¢œè‰²
 		Screen& SetColor(WORD bc, WORD fc);
-		//»»ĞĞ
+		//æ¢è¡Œ
 		Screen& SetToNextLine();
 		Screen& Clear();
 		pos GetPosX() { return start_c; }
@@ -48,7 +48,7 @@ namespace scr_print
 			cursorInfo.bVisible = visiable;
 			return *this;
 		}
-		//ÆÁÄ»ÄÚÊäÈë¹¦ÄÜ ÖØÖÃÔËËã·û>> ÀàËÆÓëcin
+		//å±å¹•å†…è¾“å…¥åŠŸèƒ½ é‡è½½è¿ç®—ç¬¦>> ç±»ä¼¼ä¸cin
 		template<typename _T>
 		inline Screen& operator >>(_T& _type)
 		{
@@ -60,12 +60,12 @@ namespace scr_print
 			std::cin >> _type;
 			SetToNextLine();
 			cursorInfo.bVisible = false;
-			SetConsoleCursorPosition(hout, coord); // »Ø³µºóÎ»ÖÃ²»¿ÉÖª,ÒÆ¶¯ÖÁScreenÏÂÒ»ĞĞ
+			SetConsoleCursorPosition(hout, coord); // å›è½¦åä½ç½®ä¸å¯çŸ¥,ç§»åŠ¨è‡³Screenä¸‹ä¸€è¡Œ
 			SetConsoleCursorInfo(hout, &cursorInfo);
 			_muStream.unlock();
 			return *this;
 		}
-		// ÆÁÄ»ÄÚÊä³ö£¬ÖØÖÃÔËËã·û<< ÀàËÆÓëcout
+		// å±å¹•å†…è¾“å‡ºï¼Œé‡è½½è¿ç®—ç¬¦<< ç±»ä¼¼ä¸cout
 		template<typename _T>
 		inline Screen& operator <<(const _T& _type)
 		{
@@ -73,19 +73,19 @@ namespace scr_print
 			ss << _type;
 			return display(ss.str());
 		}
-		// ÆÁÄ»ÄÚÊä³ö£¬ÖØÖÃÔËËã·û<< ÀàËÆÓëcout,²ÎÊıÎªendl£¬ends(º¯ÊıÖ¸Õë£¬¸Ãendl,endsÓë±ê×¼º¯Êı¿âÖĞ²»Í¬,¹¦ÄÜÏàÍ¬)
+		// å±å¹•å†…è¾“å‡ºï¼Œé‡è½½è¿ç®—ç¬¦<< ç±»ä¼¼ä¸cout,å‚æ•°ä¸ºendlï¼Œends(å‡½æ•°æŒ‡é’ˆï¼Œè¯¥endl,endsä¸æ ‡å‡†å‡½æ•°åº“ä¸­ä¸åŒ,åŠŸèƒ½ç›¸åŒ)
 		inline Screen& operator <<(Screen& (*_Pfn)(Screen&))
 		{
 			return _Pfn(*this);
 		}
 		/// <summary>
-		/// Ïß³ÌËø£¬±ÜÃâÆÁÄ»»ìÂÒ
-		/// ScreenÀà±¾ÖÊÎªÔÚ¿ØÖÆÌ¨ÖĞ»®·ÖÇøÓò£¬ĞŞ¸Ä¹â±êÎ»ÖÃÊµÏÖÆÁÄ»Êä³ö¹¦ÄÜ¡£
-		/// Îª±ÜÃâ¶àÏß³ÌÊ¹ÓÃÊ±ÆÁÄ»»ìÂÒ£¬¼ÓËø
+		/// çº¿ç¨‹é”ï¼Œé¿å…å±å¹•æ··ä¹±
+		/// Screenç±»æœ¬è´¨ä¸ºåœ¨æ§åˆ¶å°ä¸­åˆ’åˆ†åŒºåŸŸï¼Œä¿®æ”¹å…‰æ ‡ä½ç½®å®ç°å±å¹•è¾“å‡ºåŠŸèƒ½ã€‚
+		/// ä¸ºé¿å…å¤šçº¿ç¨‹ä½¿ç”¨æ—¶å±å¹•æ··ä¹±ï¼ŒåŠ é”
 		/// </summary>
 		static std::mutex _muStream;
 	private:
-		// Ä¬ÈÏ³õÊ¼»¯²ÎÊı¶¼Îª0£¬ÎŞÒâÒå£¬¹Ê²»ÔÊĞíµ÷ÓÃÄ¬ÈÏ¹¹Ôìº¯Êı
+		// é»˜è®¤åˆå§‹åŒ–å‚æ•°éƒ½ä¸º0ï¼Œæ— æ„ä¹‰ï¼Œæ•…ä¸å…è®¸è°ƒç”¨é»˜è®¤æ„é€ å‡½æ•°
 		Screen() = default;
 		inline void SetColor()
 		{
