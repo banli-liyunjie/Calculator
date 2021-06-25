@@ -5,9 +5,9 @@ namespace math
 {
 	double atan(double num)
 	{
-		if (num == 1)//arctan(1)ÊÕÁ²Âı
-			return 0.785398;
 		double numt = num > 1 ? 1 / num : num;//arctan(x)+arctan(1/x)=Pi/2
+		if (numt >= 0.999999)//arctan(x)x->1ÊÕÁ²Âı
+			return 0.785398;
 		double n = numt, sum = 0;
 		int i = 0;
 		do
