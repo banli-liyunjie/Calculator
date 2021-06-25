@@ -6,7 +6,7 @@ namespace math
 	double atan(double num)
 	{
 		double numt = num > 1 ? 1 / num : num;//arctan(x)+arctan(1/x)=Pi/2
-		if (numt >= 0.999999)//arctan(x)x->1ÊÕÁ²Âý
+		if (numt >= 0.999999)//arctan(x)x->1 æ”¶æ•›æ…¢
 			return 0.785398;
 		double n = numt, sum = 0;
 		int i = 0;
