@@ -4,6 +4,8 @@ namespace math
 {
 	double asin(double num)
 	{
+		if(num < -1 || num > 1)
+			return 0;
 		double n = num, sum = 0;
 		int i = 0;
 		do
