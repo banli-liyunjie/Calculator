@@ -306,10 +306,7 @@ void EqualClick(Screen* pSc)
 			}
 			else if (sTriangle == "asin")
 			{
-				if (Num >= -1 && Num <= 1)
-					so << math::asin(Num);
-				else
-					so << "Error!";
+				so << math::asin(Num);
 			}
 			else if (sTriangle == "atan")
 			{
