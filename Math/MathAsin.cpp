@@ -1,11 +1,12 @@
 #include "MathASin.h"
+#include <math.h>
 
 namespace math
 {
 	double asin(double num)
 	{
 		if (num < -1 || num > 1)
-			throw num;
+			return NAN;
 		double n = num, sum = 0;
 		int i = 0;
 		do
