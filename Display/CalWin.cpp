@@ -1,14 +1,23 @@
 #include "CalWin.h"
 #include <thread>
-#include "MathSin.h"
-#include "MathCos.h"
-#include "MathAsin.h"
-#include "MathAtan.h"
+//#include "MathSin.h"
+//#include "MathCos.h"
+//#include "MathAsin.h"
+//#include "MathAtan.h"
+#include "CalWin.h"
 
+#include "sin.h"
+#include "cos.h"
+#include "arcsin.h"
+#include  "arctan.h"
 
+#include <sstream>
 using scr_print::Screen;
 using scr_print::endl;
 using scr_print::ends;
+
+#include <string>
+using namespace std;
 
 /*
 * REG: Screen注册表，用于自动生成（宏展开）为Screen指针的定义、初始化、点击响应函数的声明与调用
@@ -40,7 +49,8 @@ x(Point,15, 21, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    .",  PointCl
 x(ATan, 15, 31, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n   atan",AtanClick)\
 x(Back, 19, 11, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    ←", BackClick)\
 x(Clr,  19, 21, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    AC", ClrClick)\
-x(Equal,19, 31, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    =",  EqualClick)
+x(Equal,19, 31, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    =",  EqualClick)\
+x(Test,19, 1, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    test",  TestClick)
 
 
 /*
@@ -108,6 +118,10 @@ std::string sEnter = "";
 std::string sTriangle = "";
 std::string sNum = "";
 std::string sResult;
+//添加角度值
+string sAngle = "";
+
+
 
 void CalWinInit()
 {
@@ -143,7 +157,7 @@ void DealTask()
 	while (!stopflag)
 	{
 		if (sTriangle != "")
-			sEnter = sTriangle + '(' + sNum + ')';
+			sEnter = sTriangle + '(' + sNum +sAngle+ ')';
 		else if (sNum != "")
 			sEnter = sNum;
 		else
@@ -242,10 +256,12 @@ void PointClick(Screen* pSc)
 void SinClick(Screen* pSc)
 {
 	sTriangle = "sin";
+	sAngle = "°";
 }
 void CosClick(Screen* pSc)
 {
 	sTriangle = "cos";
+	sAngle = "°";
 }
 void AsinClick(Screen* pSc)
 {
@@ -298,19 +314,44 @@ void EqualClick(Screen* pSc)
 			si >> Num;
 			if (sTriangle == "sin")
 			{
-				so << math::sin(Num);
+				//so << math::sin(Num);
+				string ans;
+				ans = Sin::SinTest(Num);
+				//ans += "°";//加上角度符号
+				//4）显示在界面中
+				so << ans;
 			}
 			else if (sTriangle == "cos")
 			{
-				so << math::cos(Num);
+				//so << math::cos(Num);
+				string ans;
+				ans = Cos::CinTest(Num);
+				//ans += "°";//加上角度符号
+				//4）显示在界面中
+				so << ans;
 			}
 			else if (sTriangle == "asin")
 			{
-				so << math::asin(Num);
+				//so << math::asin(Num);
+				 
+				//1)ans-----arcsin计算结果
+				//ArcSin* arcsinTest = NULL;
+				string ans;
+				//ans= arcsinTest->ArcsinTest(Num);
+				ans = ArcSin::ArcsinTest(Num);
+				ans += "°";//加上角度符号
+				//4）显示在界面中
+				so << ans;
 			}
 			else if (sTriangle == "atan")
 			{
-				so << math::atan(Num);
+				//so << math::atan(Num);
+				string ans;
+				//ans= arcsinTest->ArcsinTest(Num);
+				ans = ArcTan::ArctanTest(Num);
+				ans += "°";//加上角度符号
+				//4）显示在界面中
+				so << ans;
 			}
 			sResult = so.str();
 		}
@@ -342,6 +383,26 @@ void EqualClick(Screen* pSc)
 	}
 }
 
+std::string testAll()
+{
+	std::string answer="";//结果显示测试结果
+	std::string sIn;//存放Tayler计算结果
+	double doubleIn;//Tayler计算结果double类型
+	double compareIn;//调用math函数计算结果
+	double diff;//两结果差值
+
+	 //1.sin函数测试
+
+	answer = "通过测试！";
+	return answer;
+}
+
+
+void TestClick(Screen* pSc)
+{
+	sNum = "";
+	sResult= testAll();
+}
 
 
 
