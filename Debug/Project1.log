@@ -1,3 +1,8 @@
-﻿  arcsin.cpp
-E:\Risponsiry\Cal2.0.1\arcsin.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-  Project1.vcxproj -> E:\Risponsiry\Cal2.0.1\x64\Debug\Project1.exe
+﻿  CalWin.cpp
+E:\Risponsiry\CalTest2.0.2\Console.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+E:\Risponsiry\CalTest2.0.2\Console.h(110,16): warning C4018: “>=”: 有符号/无符号不匹配
+E:\Risponsiry\CalTest2.0.2\Console.h(114,17): warning C4018: “>=”: 有符号/无符号不匹配
+E:\Risponsiry\CalTest2.0.2\CalWin.cpp(168,79): warning C4267: “参数”: 从“size_t”转换到“scr_print::pos”，可能丢失数据
+E:\Risponsiry\CalTest2.0.2\CalWin.cpp(204,2): warning C4002: 类函数宏的调用“DEL”参数过多
+E:\Risponsiry\CalTest2.0.2\CalWin.cpp(238): warning C4715: “GetChar”: 不是所有的控件路径都返回值
+  Project1.vcxproj -> E:\Risponsiry\CalTest2.0.2\x64\Debug\Project1.exe
