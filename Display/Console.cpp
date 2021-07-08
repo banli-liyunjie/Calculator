@@ -1,5 +1,7 @@
 #include "Console.h"
 
+#include <sstream>
+
 namespace scr_print
 {
 	using std::mutex;
