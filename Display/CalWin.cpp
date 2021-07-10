@@ -1,14 +1,26 @@
 #include "CalWin.h"
 #include <thread>
-#include "MathSin.h"
-#include "MathCos.h"
-#include "MathAsin.h"
-#include "MathAtan.h"
+//#include "MathSin.h"
+//#include "MathCos.h"
+//#include "MathAsin.h"
+//#include "MathAtan.h"
+#include "CalWin.h"
 
+#include "sin.h"
+#include "cos.h"
+#include "arcsin.h"
+#include  "arctan.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+#include <sstream>
 using scr_print::Screen;
 using scr_print::endl;
 using scr_print::ends;
+
+#include <string>
+using namespace std;
 
 /*
 * REG: Screen注册表，用于自动生成（宏展开）为Screen指针的定义、初始化、点击响应函数的声明与调用
@@ -19,8 +31,8 @@ using scr_print::ends;
 * 其余指针变量定义，初始化，响应函数调用，均在宏展开中自动完成。
 */
 #define REG(x)\
-x(Enter, 0, 0, 1, 41, BACKGROUND_WHITE, 0, false,"",EnterClick)\
-x(Result,1, 0, 1, 41, BACKGROUND_WHITE, 0, false,"",ResultClick)\
+x(Enter, 0, 0, 1, 70, BACKGROUND_WHITE, 0, false,"",EnterClick)\
+x(Result,1, 0, 1, 70, BACKGROUND_WHITE, 0, false,"",ResultClick)\
 \
 x(Num7,  3,  1, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    7",  NumClick)\
 x(Num8,  3, 11, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    8",  NumClick)\
@@ -40,7 +52,8 @@ x(Point,15, 21, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    .",  PointCl
 x(ATan, 15, 31, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n   atan",AtanClick)\
 x(Back, 19, 11, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    ←", BackClick)\
 x(Clr,  19, 21, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    AC", ClrClick)\
-x(Equal,19, 31, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    =",  EqualClick)
+x(Equal,19, 31, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    =",  EqualClick)\
+x(Test,19, 1, 3, 9, BACKGROUND_GRAY, FONT_WHITE + 8, false,"\n    test",  TestClick)
 
 
 /*
@@ -108,6 +121,10 @@ std::string sEnter = "";
 std::string sTriangle = "";
 std::string sNum = "";
 std::string sResult;
+//添加角度值
+string sAngle = "";
+
+
 
 void CalWinInit()
 {
@@ -130,8 +147,6 @@ void CalWinInit()
 #if 0
 	DWORD mode;
 	GetConsoleMode(hStdin, &mode);
-	mode &= ~ENABLE_QUICK_EDIT_MODE;  //移除快速编辑模式
-	mode &= ~ENABLE_INSERT_MODE;      //移除插入模式
 	mode &= ~ENABLE_MOUSE_INPUT;
 	SetConsoleMode(hStdin, mode);
 #endif
@@ -143,7 +158,7 @@ void DealTask()
 	while (!stopflag)
 	{
 		if (sTriangle != "")
-			sEnter = sTriangle + '(' + sNum + ')';
+			sEnter = sTriangle + '(' + sNum +sAngle+ ')';
 		else if (sNum != "")
 			sEnter = sNum;
 		else
@@ -242,10 +257,12 @@ void PointClick(Screen* pSc)
 void SinClick(Screen* pSc)
 {
 	sTriangle = "sin";
+	sAngle = "°";
 }
 void CosClick(Screen* pSc)
 {
 	sTriangle = "cos";
+	sAngle = "°";
 }
 void AsinClick(Screen* pSc)
 {
@@ -298,20 +315,46 @@ void EqualClick(Screen* pSc)
 			si >> Num;
 			if (sTriangle == "sin")
 			{
-				so << math::sin(Num);
+				//so << math::sin(Num);
+				string ans;
+				ans = Sin::SinTest(Num);
+				//ans += "°";//加上角度符号
+				//4）显示在界面中
+				so << ans;
 			}
 			else if (sTriangle == "cos")
 			{
-				so << math::cos(Num);
+				//so << math::cos(Num);
+				string ans;
+				ans = Cos::CinTest(Num);
+				//ans += "°";//加上角度符号
+				//4）显示在界面中
+				so << ans;
 			}
 			else if (sTriangle == "asin")
 			{
-				so << math::asin(Num);
+				//so << math::asin(Num);
+				 
+				//1)ans-----arcsin计算结果
+				//ArcSin* arcsinTest = NULL;
+				string ans;
+				//ans= arcsinTest->ArcsinTest(Num);
+				ans = ArcSin::ArcsinTest(Num);
+				ans += "°";//加上角度符号
+				//4）显示在界面中
+				so << ans;
 			}
 			else if (sTriangle == "atan")
 			{
-				so << math::atan(Num);
+				//so << math::atan(Num);
+				string ans;
+				//ans= arcsinTest->ArcsinTest(Num);
+				ans = ArcTan::ArctanTest(Num);
+				ans += "°";//加上角度符号
+				//4）显示在界面中
+				so << ans;
 			}
+
 			sResult = so.str();
 		}
 		else
@@ -342,6 +385,210 @@ void EqualClick(Screen* pSc)
 	}
 }
 
+
+double strDou(string str) {	//string 转换 double
+	char* ch = new char[0];
+	double d;
+	for (int i = 0; i != str.length(); i++)
+		ch[i] = str[i];
+	d = atof(ch);
+	return d;
+}
+
+
+std::string testAll()
+{
+	std::string answer="";//结果显示测试结果
+	std::string sIn;//存放Tayler计算结果
+	double doubleIn;//Tayler计算结果double类型
+	double compareIn;//调用math函数计算结果
+	double diff;//两结果差值
+
+	double solveSin[3] = { 0,0,0 };
+	double solveCin[3] = { 0,0,0 };
+	double solveArcsin[4] = { 0,0,0,0 };
+	double solveArctan[3] = { 0,0,0 };
+
+
+	 //----------1.sin函数测试-----------------
+	//1）负数测试
+	sIn = Sin::SinTest(-30.5);//-30.5测试
+	//doubleIn = sIn.toDouble();//转换为double
+	doubleIn = strDou(sIn);
+	compareIn = sin(-30.5 * M_PI / 180);
+	
+	diff = abs(doubleIn - compareIn);
+
+	if (diff < 0.01)
+	{
+		solveSin[0] = 1;//1表示负数测试通过
+		//answer += "  1)负数测试通过！\n";
+	}
+	else {
+		//answer += "  1)负数测试不通过！\n";
+		//qDebug() << diff;
+	}
+
+	//2）0测试
+	sIn = Sin::SinTest(0);//0测试
+	doubleIn = strDou(sIn);
+	compareIn = sin(0 * M_PI / 180);
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveSin[1] = 1;//1表示0测试通过
+	}
+
+	//3）正数测试
+	sIn = Sin::SinTest(562.98);//562.98测试
+	doubleIn = strDou(sIn);
+	compareIn = sin(562.98 * M_PI / 180);
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveSin[2] = 1;//1表示562.98测试通过
+	}
+
+	//------------------2.cos函数测试------------------
+	//1）负数测试
+	sIn = Cos::CinTest(-30.5);//-30.5测试
+	doubleIn = strDou(sIn);
+	compareIn = cos(-30.5 * M_PI / 180);
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveCin[0] = 1;//1表示-30.5测试通过
+	}
+	//2）0测试
+	sIn = Cos::CinTest(0);//0测试
+	doubleIn = strDou(sIn);
+	compareIn = cos(0 * M_PI / 180);
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveCin[1] = 1;//1表示0测试通过
+	}
+
+	//3）正数测试
+	sIn = Cos::CinTest(562.98);//562.98测试
+	doubleIn = strDou(sIn);
+	compareIn = cos(562.98 * M_PI / 180);
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveCin[2] = 1;//1表示562.98测试通过
+	}
+
+	//---------------3.arcsin函数测试--------------------------
+	//1）取值范围内负数测试
+	sIn = ArcSin::ArcsinTest(-0.922);//-0.922测试
+	doubleIn = strDou(sIn);
+	compareIn = asin(-0.922) * 180 / M_PI;
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveArcsin[0] = 1;//1表示-0.922测试通过
+	}
+	//2）0测试
+	sIn = ArcSin::ArcsinTest(0);//0测试
+	doubleIn = strDou(sIn);
+	compareIn = asin(0) * 180 / M_PI;
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveArcsin[1] = 1;//1表示0测试通过
+	}
+
+	//3）取值范围内正数测试
+	sIn = ArcSin::ArcsinTest(0.326);//0.326测试
+	doubleIn = strDou(sIn);
+	compareIn = asin(0.326) * 180 / M_PI;
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveArcsin[2] = 1;//1表示0.326测试通过
+	}
+
+	//4)取值范围外异常值测试
+	sIn = ArcSin::ArcsinTest(-1.3);//测试
+
+	if (sIn._Equal("error!") )
+	{
+		solveArcsin[3] = 1;
+	}
+
+	//---------------4.arctan函数测试---------------------------
+	//1）负数测试
+	sIn = ArcTan::ArctanTest(-9.22);//-0.922测试
+	doubleIn = strDou(sIn);
+	compareIn = atan(-9.22) * 180 / M_PI;
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveArctan[0] = 1;//1表示-0.922测试通过
+	}
+	//2）0测试
+	sIn = ArcTan::ArctanTest(0);//0测试
+	doubleIn = strDou(sIn);
+	compareIn = atan(0) * 180 / M_PI;
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveArctan[1] = 1;//1表示0测试通过
+	}
+
+	//3）正数测试
+	sIn = ArcTan::ArctanTest(34.56);//34.56测试
+	doubleIn = strDou(sIn);
+	compareIn = atan(34.56) * 180 / M_PI;
+	diff = abs(doubleIn - compareIn);
+	if (diff < 0.01)
+	{
+		solveArctan[2] = 1;//1表示34.56测试通过
+	}
+
+	//将测试结果传到result中
+	if ((solveSin[0] == 1) & (solveSin[1] == 1) & (solveSin[2] == 1))
+		answer += "1)sinTest√；";
+	else
+	{
+		answer += "1)sinTest×；";
+	}
+
+	if ((solveCin[0] == 1) & (solveCin[1] == 1) & (solveCin[2] == 1))
+		answer += " 2)cosTest√；";
+	else
+	{
+		answer += " 2)cosTest×；";
+	}
+
+	if ((solveArcsin[0] == 1) & (solveArcsin[1] == 1) & (solveArcsin[2] == 1) & (solveArcsin[3] == 1))
+		answer += " 3)arcsinTest√；";
+	else
+	{
+		answer += " 3)arcsinTest×；";
+	}
+
+	if ((solveArctan[0] == 1) & (solveArctan[1] == 1) & (solveArctan[2] == 1))
+		answer += " 4)arctanTest√；";
+	else
+	{
+		answer += " 4)arctanTest×；";
+	}
+
+	//answer = "通过测试！";
+	return answer;
+}
+
+
+void TestClick(Screen* pSc)
+{
+	//Test之后不可再进行三角函数的计算，否则程序自动退出
+	//sNum = "";
+	sEnter = "";
+	sResult= testAll();
+	//sTriangle = "test";//可以之后进入单个数值的计算，否则自动退出
+}
 
 
 
